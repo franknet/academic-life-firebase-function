@@ -14,7 +14,7 @@ const app = createApp();
  * uses OpenAI with Zod structured output to parse academic data, grades, and schedules,
  * and returns validated JSON.
  */
-export const webPortalExtractor = onRequest(
+export const api = onRequest(
   {
     region: "us-central1",
     memory: "512MiB",

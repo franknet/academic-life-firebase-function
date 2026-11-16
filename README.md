@@ -31,12 +31,15 @@ A Firebase Cloud Function designed to extract structured academic data from stud
         ├── config/
         │   └── openai.ts      # OpenAI client configuration
         ├── controllers/
-        │   └── portal.controller.ts # Request handling and response formatting
+        │   ├── portal.controller.ts # Request handling and response formatting
+        │   └── financial.controller.ts # Financial position controller
         ├── routes/
-        │   └── portal.routes.ts     # Express routes (/extract, /health)
+        │   ├── portal.routes.ts     # Express routes (/portal/extract, /portal/health)
+        │   └── financial.routes.ts  # Express routes (/financial/extract, /portal/financial)
         ├── schemas/
         │   ├── request.schema.ts    # Zod schema for HTTP request validation
-        │   └── studentPortal.schema.ts # Zod schema for extracted student data
+        │   ├── studentPortal.schema.ts # Zod schema for extracted student data
+        │   └── financial.schema.ts  # Zod schema for financial statement (Posição Financeira)
         └── services/
             └── extractor.service.ts # HTML sanitization and OpenAI structured extraction
 ```
@@ -125,7 +128,65 @@ A Firebase Cloud Function designed to extract structured academic data from stud
   }
   ```
 
-### 2. Health Check
+### 2. Extract Financial Statement (Posição Financeira)
+- **Endpoint**: `POST /financial` (or `/financial/extract`, `/portal/financial`)
+- **Headers**: `Content-Type: application/json`
+- **Request Body**:
+  ```json
+  {
+    "html": "<html>...UNIP Posição Financeira HTML...</html>",
+    "additionalInstructions": "Extract all installments and tuition fees"
+  }
+  ```
+
+- **Response (200 OK)**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "student": {
+        "studentId": "D306308",
+        "studentName": "RAFAEL LUIZ SOARES MOTA",
+        "course": "33901 PSICOLOGIA (FORMACAO DE PSICOLOGO)",
+        "classCohort": "10/WA0930",
+        "curriculumGrade": "2020/1",
+        "campusUnit": "BRASILIA",
+        "enrollmentStatus": "ATIVO",
+        "statementDate": "15/11/2026 23:36"
+      },
+      "items": [
+        {
+          "sequence": "01/01",
+          "installment": "01/08",
+          "typeCode": "CD",
+          "typeDescription": "Confissão de dívida",
+          "paymentPlan": "339/0",
+          "dueDate": "27/04/18",
+          "documentAmount": 623.42,
+          "documentAmountFormatted": "R$623,42",
+          "paymentDate": "28/03/2018",
+          "paidAmount": 623.42,
+          "paidAmountFormatted": "R$623,42",
+          "reversal": null,
+          "observation": "OK",
+          "status": "PAID",
+          "hasReceipt": false
+        }
+      ],
+      "summary": {
+        "totalItems": 1,
+        "totalPaidAmount": 623.42,
+        "totalPendingAmount": 0,
+        "totalOverdueCount": 0,
+        "totalPaidCount": 1,
+        "totalOpenCount": 0
+      },
+      "extractedAt": "2026-11-15T23:40:00.000Z"
+    }
+  }
+  ```
+
+### 3. Health Check
 - **Endpoint**: `GET /extractStudentPortalData/health`
 - **Response (200 OK)**:
   ```json
