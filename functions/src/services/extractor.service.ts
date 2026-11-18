@@ -12,20 +12,7 @@ import {
   FinancialScheme,
   financialScheme,
 } from "../schemas/financial.schema";
-
-/**
- * Strips script, style, SVG, and redundant whitespace from HTML
- * to reduce token count while keeping semantic tags and text.
- */
-function cleanHtml(rawHtml: string): string {
-  return rawHtml
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
-    .replace(/<svg\b[^<]*(?:(?!<\/svg>)<[^<]*)*<\/svg>/gi, "")
-    .replace(/<!--[\s\S]*?-->/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+import { cleanHtml } from "../utils/htmlCleaner";
 
 export class ExtractorService {
   /**

@@ -40,8 +40,10 @@ A Firebase Cloud Function designed to extract structured academic data from stud
         │   ├── request.schema.ts    # Zod schema for HTTP request validation
         │   ├── studentPortal.schema.ts # Zod schema for extracted student data
         │   └── financial.schema.ts  # Zod schema for financial statement (Posição Financeira)
-        └── services/
-            └── extractor.service.ts # HTML sanitization and OpenAI structured extraction
+        ├── services/
+        │   └── extractor.service.ts # OpenAI structured extraction orchestration
+        └── utils/
+            └── htmlCleaner.ts       # HTML DOM sanitizer (removes scripts, CSS, hidden inputs, ViewStates)
 ```
 
 ---
